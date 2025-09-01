@@ -529,7 +529,7 @@ export const Music = {
   renderFilterOptions, sortSongs, getUnique,
   getSongWithCover: async (song) => {
     try {
-      const response = await fetch('http://localhost:3000/api/get-song-preview', {
+      const response = await fetch('/api/get-song-preview', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -558,4 +558,5 @@ export const Music = {
       return { ...song, capa: './img/default-cover.png' };
     }
   }
+
 };
