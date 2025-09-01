@@ -1,0 +1,9 @@
+{
+  "name": "netlify-functions",
+  "version": "1.0.0",
+  "description": "Dependencies for Netlify Functions",
+  "main": "get-song-context.js",
+  "dependencies": {
+    "@google/generative-ai": "^0.14.1"
+  }
+}
