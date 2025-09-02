@@ -340,56 +340,58 @@ const setupGlobalListeners = () => {
         }
 
         if (cardPlayPauseBtn) {
-            const card = cardPlayPauseBtn.closest('.card');
-            const songId = parseInt(card.dataset.id);
+        const card = cardPlayPauseBtn.closest('.card');
+        const songId = parseInt(card.dataset.id);
+        
+        if (appState.currentPlayingSongId === songId) {
+            audioPlayer.pause();
+            appState.currentPlayingSongId = null;
+        } else {
+            const song = appState.songs.find(s => s.id === songId);
             
-            if (appState.currentPlayingSongId === songId) {
-                audioPlayer.pause();
-                appState.currentPlayingSongId = null;
-            } else {
-                const song = appState.songs.find(s => s.id === songId);
+            if (song) {
+                cardPlayPauseBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i>';
                 
-                if (song) {
-                    cardPlayPauseBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i>';
-                    
-                    try {
-                        const response = await fetch('/.netlify/functions/get-song-preview', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ song: song.title, artist: song.artist })
-                        });
-                        if (!response.ok) throw new Error('Falha na resposta da rede.');
-                        const data = await response.json();
-
-                        if (data.previewUrl) {
-                            audioPlayer.src = data.previewUrl;
-                            audioPlayer.play();
-                            appState.currentPlayingSongId = songId;
-                        } else {
-                            console.error('URL da prévia não encontrada.');
-                            cardPlayPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-                            return;
-                        }
-                    } catch (error) {
-                        console.error('Erro ao buscar a prévia da API:', error);
+                try {
+                    const response = await fetch('/.netlify/functions/get-song-preview', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ song: song.title, artist: song.artist })
+                    });
+                    if (!response.ok) throw new Error('Falha na resposta da rede.');
+                    const data = await response.json();
+    
+                    if (data.previewUrl) {
+                        audioPlayer.src = data.previewUrl;
+                        audioPlayer.play();
+                        appState.currentPlayingSongId = songId;
+                    } else {
+                        console.error('URL da prévia não encontrada.');
                         cardPlayPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
                         return;
                     }
-                } else {
-                    console.error('Música não encontrada no estado da aplicação.');
+                } catch (error) {
+                    console.error('Erro ao buscar a prévia da API:', error);
+                    cardPlayPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
                     return;
                 }
+            } else {
+                console.error('Música não encontrada no estado da aplicação.');
+                return;
             }
+        }
             document.querySelectorAll('.play-pause-btn').forEach(btn => {
-                const btnSongId = parseInt(btn.closest('.card').dataset.id);
+            const card = btn.closest('.card');
+            if (card) { // Verifica se o botão está dentro de um card
+                const btnSongId = parseInt(card.dataset.id);
                 if (btnSongId === appState.currentPlayingSongId) {
                     btn.innerHTML = '<i class="fas fa-pause"></i>';
                 } else {
                     btn.innerHTML = '<i class="fas fa-play"></i>';
                 }
-            });
-        }
-    });
+            }
+        });
+    }
 
     if (mainPlayPauseBtn) {
         mainPlayPauseBtn.addEventListener('click', () => {
@@ -515,6 +517,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupGlobalListeners();
 
 })
+
 
 
 
