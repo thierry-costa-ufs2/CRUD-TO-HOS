@@ -1014,21 +1014,26 @@ body.sidebar-closed .main-content {
 
 @media (max-width: 768px) {
     #player-bar {
-        display: flex;
+        position: relative; /* Torna-se a referência para os elementos internos */
+        display: flex; /* Mantém o layout flexível */
         align-items: center;
-        gap: 15px; /* Adiciona espaço entre os itens */
-        padding: 0 15px; /* Adiciona espaçamento nas laterais */
+        padding: 0 15px;
+        gap: 15px;
     }
+
     .player-controls {
-        flex-shrink: 0; /* Impede que o botão encolha */
-        /* Mantém o seu tamanho original para ser visível */
+        flex-shrink: 0;
+        /* Garante que o botão tenha um tamanho fixo */
+        min-width: 40px; 
     }
+
     .player-progress {
-        flex-grow: 1; /* Permite que a barra de progresso ocupe o espaço restante */
-        min-width: 0; /* Impede que ela empurre o contêiner para fora da tela */
+        position: absolute; /* Sai do fluxo normal do documento */
+        left: 65px; /* Define o ponto inicial, para a direita do botão */
+        right: 15px; /* Define o ponto final, para a esquerda do contêiner */
         display: flex;
         align-items: center;
-        gap: 8px; /* Espaço entre o tempo da música e a barra de progresso */
+        gap: 8px;
     }
     .card {
         padding: 10px;
@@ -1343,6 +1348,7 @@ body.sidebar-closed .main-content {
     transition: width 0.1s linear;
 
 }
+
 
 
 
