@@ -292,7 +292,7 @@ const setupGlobalListeners = () => {
                 Render.openModal(contextModal);
                 contextContent.textContent = 'Carregando contexto da IA...';
                 try {
-                    const response = await fetch('/api/get-song-context', {
+                    const response = await fetch('resomusic.netlify.app/api/get-song-context', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ song: song.title, artist: song.artist })
@@ -515,4 +515,5 @@ document.addEventListener('DOMContentLoaded', () => {
     setupGlobalListeners();
 
 })
+
 
