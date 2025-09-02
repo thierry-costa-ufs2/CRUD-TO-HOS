@@ -1013,6 +1013,24 @@ body.sidebar-closed .main-content {
 }
 
 @media (max-width: 768px) {
+    #player-bar {
+        display: flex; /* Transforma o contêiner em um layout flexível */
+        align-items: center; /* Alinha os itens verticalmente no centro */
+        gap: 15px; /* Adiciona um espaço de 15px entre os filhos */
+        padding: 0 10px; /* Adiciona um pequeno padding nas laterais */
+    }
+
+    .player-controls {
+        flex-shrink: 0; /* Impede que o botão de play encolha */
+        margin-left: auto; /* Empurra o botão de play para a esquerda, se precisar de ajuste */
+    }
+
+    .player-progress {
+        flex: 1; /* Permite que a barra de progresso ocupe todo o espaço disponível */
+        display: flex; /* Define o layout interno como flexível também */
+        align-items: center; /* Alinha os elementos internos verticalmente */
+        gap: 10px; /* Adiciona espaço entre o tempo e a barra de progresso */
+    }
     .card {
         padding: 10px;
     }
@@ -1326,5 +1344,6 @@ body.sidebar-closed .main-content {
     transition: width 0.1s linear;
 
 }
+
 
 
