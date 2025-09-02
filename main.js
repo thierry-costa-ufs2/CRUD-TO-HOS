@@ -353,7 +353,7 @@ const setupGlobalListeners = () => {
                     cardPlayPauseBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i>';
                     
                     try {
-                        const response = await fetch('http://localhost:3000/api/get-song-preview', {
+                        const response = await fetch('/api/get-song-preview', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ song: song.title, artist: song.artist })
@@ -513,4 +513,5 @@ const setupGlobalListeners = () => {
 document.addEventListener('DOMContentLoaded', () => {
     initializeState();
     setupGlobalListeners();
+
 })
