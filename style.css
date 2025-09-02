@@ -1266,6 +1266,7 @@ body.sidebar-closed .main-content {
 .player-controls {
     display: flex;
     align-items: center;
+    gap: 15px;
 }
 
 #close-player-btn {
@@ -1325,4 +1326,5 @@ body.sidebar-closed .main-content {
     transition: width 0.1s linear;
 
 }
+
 
