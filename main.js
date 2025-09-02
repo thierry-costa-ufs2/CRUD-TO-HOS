@@ -198,28 +198,28 @@ const setupGlobalListeners = () => {
         const clickablePlaylistCard = event.target.closest('.clickable-card');
         
         if (clickablePlaylistCard) {
-        const playlistTitle = clickablePlaylistCard.dataset.playlist;
-        const playlistType = clickablePlaylistCard.dataset.type;
-        let songsInPlaylist = [];
+            const playlistTitle = clickablePlaylistCard.dataset.playlist;
+            const playlistType = clickablePlaylistCard.dataset.type;
+            let songsInPlaylist = [];
 
-        if (playlistType === 'genre-decade') {
-            const mappedPlaylist = genreDecadeMapping[playlistTitle];
-            if (mappedPlaylist) {
-                songsInPlaylist = Music.createPlaylistByDG(appState.songs, mappedPlaylist.genre, mappedPlaylist.decade);
+            if (playlistType === 'genre-decade') {
+                const mappedPlaylist = genreDecadeMapping[playlistTitle];
+                if (mappedPlaylist) {
+                    songsInPlaylist = Music.createPlaylistByDG(appState.songs, mappedPlaylist.genre, mappedPlaylist.decade);
+                }
+            } else if (playlistType === 'artist') {
+                songsInPlaylist = Music.listSongsByArtist(appState.songs, playlistTitle);
+            } else if (playlistType === 'genre') {
+                songsInPlaylist = Music.createPlaylistByGenre(appState.songs, playlistTitle);
+            } else if (playlistType === 'mood') {
+                songsInPlaylist = Music.createPlaylistByMood(appState.songs, moodMapping, playlistTitle);
+            } else if (playlistType === 'style') {
+                    // A LINHA CORRETA ESTÁ AQUI
+                songsInPlaylist = Music.createPlaylistByStyle(appState.songs, styleMapping, moodMapping, playlistTitle);
             }
-        } else if (playlistType === 'artist') {
-            songsInPlaylist = Music.listSongsByArtist(appState.songs, playlistTitle);
-        } else if (playlistType === 'genre') {
-            songsInPlaylist = Music.createPlaylistByGenre(appState.songs, playlistTitle);
-        } else if (playlistType === 'mood') {
-            songsInPlaylist = Music.createPlaylistByMood(appState.songs, moodMapping, playlistTitle);
-        } else if (playlistType === 'style') {
-            // A LINHA CORRETA ESTÁ AQUI
-            songsInPlaylist = Music.createPlaylistByStyle(appState.songs, styleMapping, moodMapping, playlistTitle);
-        }
 
-        Render.renderPlaylistPage(songsInPlaylist, playlistTitle);
-        return;
+            Render.renderPlaylistPage(songsInPlaylist, playlistTitle);
+            return;
         }
 
         // --- FIM DA LÓGICA DE PLAYLISTS ---
@@ -340,80 +340,83 @@ const setupGlobalListeners = () => {
         }
 
         if (cardPlayPauseBtn) {
-        const card = cardPlayPauseBtn.closest('.card');
-        const songId = parseInt(card.dataset.id);
+            const card = cardPlayPauseBtn.closest('.card');
+            const songId = parseInt(card.dataset.id);
         
-        if (appState.currentPlayingSongId === songId) {
-            audioPlayer.pause();
-            appState.currentPlayingSongId = null;
-        } else {
-            const song = appState.songs.find(s => s.id === songId);
-            
-            if (song) {
-                cardPlayPauseBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i>';
+            if (appState.currentPlayingSongId === songId) {
+                audioPlayer.pause();
+                appState.currentPlayingSongId = null;
+            } else {
+                const song = appState.songs.find(s => s.id === songId);
                 
-                try {
-                    const response = await fetch('/.netlify/functions/get-song-preview', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ song: song.title, artist: song.artist })
-                    });
-                    if (!response.ok) throw new Error('Falha na resposta da rede.');
-                    const data = await response.json();
-    
-                    if (data.previewUrl) {
-                        audioPlayer.src = data.previewUrl;
-                        audioPlayer.play();
-                        appState.currentPlayingSongId = songId;
-                    } else {
-                        console.error('URL da prévia não encontrada.');
+                if (song) {
+                    cardPlayPauseBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i>';
+                    
+                    try {
+                        const response = await fetch('/.netlify/functions/get-song-preview', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ song: song.title, artist: song.artist })
+                        });
+                        if (!response.ok) throw new Error('Falha na resposta da rede.');
+                        const data = await response.json();
+        
+                        if (data.previewUrl) {
+                            audioPlayer.src = data.previewUrl;
+                            audioPlayer.play();
+                            appState.currentPlayingSongId = songId;
+                        } else {
+                            console.error('URL da prévia não encontrada.');
+                            cardPlayPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                            return;
+                        }
+                    } catch (error) {
+                        console.error('Erro ao buscar a prévia da API:', error);
                         cardPlayPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
                         return;
                     }
-                } catch (error) {
-                    console.error('Erro ao buscar a prévia da API:', error);
-                    cardPlayPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                } else {
+                    console.error('Música não encontrada no estado da aplicação.');
                     return;
                 }
-            } else {
-                console.error('Música não encontrada no estado da aplicação.');
-                return;
             }
-        }
+
+            // Esta parte foi ajustada para estar fora do else, mas ainda dentro do if (cardPlayPauseBtn)
             document.querySelectorAll('.play-pause-btn').forEach(btn => {
-            const card = btn.closest('.card');
-            if (card) { // Verifica se o botão está dentro de um card
-                const btnSongId = parseInt(card.dataset.id);
-                if (btnSongId === appState.currentPlayingSongId) {
-                    btn.innerHTML = '<i class="fas fa-pause"></i>';
-                } else {
-                    btn.innerHTML = '<i class="fas fa-play"></i>';
+                const card = btn.closest('.card');
+                if (card) { // Verifica se o botão está dentro de um card
+                    const btnSongId = parseInt(card.dataset.id);
+                    if (btnSongId === appState.currentPlayingSongId) {
+                        btn.innerHTML = '<i class="fas fa-pause"></i>';
+                    } else {
+                        btn.innerHTML = '<i class="fas fa-play"></i>';
+                    }
                 }
-            }
-        });
-    }
-
-    if (mainPlayPauseBtn) {
-        mainPlayPauseBtn.addEventListener('click', () => {
-            if (audioPlayer.paused) {
-                audioPlayer.play();
-            } else {
-                audioPlayer.pause();
-            }
-        });
-    }
-
-    if (closePlayerBtn) {
-        closePlayerBtn.addEventListener('click', () => {
-            audioPlayer.pause();
-            audioPlayer.currentTime = 0;
-            playerBar.classList.add('hidden');
-            appState.currentPlayingSongId = null;
-            document.querySelectorAll('.play-pause-btn').forEach(btn => {
-                btn.innerHTML = '<i class="fas fa-play"></i>';
             });
-        });
-    }
+        } // <--- CHAVE ADICIONADA AQUI
+
+        if (mainPlayPauseBtn) {
+            mainPlayPauseBtn.addEventListener('click', () => {
+                if (audioPlayer.paused) {
+                    audioPlayer.play();
+                } else {
+                    audioPlayer.pause();
+                }
+            });
+        }
+
+        if (closePlayerBtn) {
+            closePlayerBtn.addEventListener('click', () => {
+                audioPlayer.pause();
+                audioPlayer.currentTime = 0;
+                playerBar.classList.add('hidden');
+                appState.currentPlayingSongId = null;
+                document.querySelectorAll('.play-pause-btn').forEach(btn => {
+                    btn.innerHTML = '<i class="fas fa-play"></i>';
+                });
+            });
+        }
+    }); // <--- PARÊNTESE ADICIONADO AQUI, FECHANDO O LISTENER DO DOCUMENT
 
     audioPlayer.addEventListener('play', () => {
         playerBar.classList.remove('hidden');
@@ -517,6 +520,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupGlobalListeners();
 
 })
+
 
 
 
