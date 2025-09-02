@@ -233,12 +233,14 @@ const renderExplorePage = (state) => {
             <div class="explore-filters-bar hidden">
                 <div class="filter-group">
                     <label for="sort-by" class="filter-label">Ordem:</label>
-                    <select name="ordem" id="sort-by" class="filter-select">
-                        <option value="default">Padrão</option>
-                        <option value="title">Alfabeto</option>
-                        <option value="year">Data</option>
-                    </select>
-                    <button id="sort-direction-btn" class="sort-direction-btn-modern"><i class="fas fa-sort-down"></i></button>
+                    <div class="sort-control">
+                        <select name="ordem" id="sort-by" class="filter-select">
+                            <option value="default">Padrão</option>
+                            <option value="title">Alfabeto</option>
+                            <option value="year">Data</option>
+                        </select>
+                        <button id="sort-direction-btn" class="sort-direction-btn-modern"><i class="fas fa-sort-down"></i></button>
+                    </div>
                 </div>
                 <div class="filter-group">
                     <label for="genre-filter" class="filter-label">Gênero:</label>
