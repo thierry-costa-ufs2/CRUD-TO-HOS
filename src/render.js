@@ -23,7 +23,7 @@ const closeModal = (modalElement) => {
 // Gemini -> Contexto
 const fetchSongContext = async (songTitle, artistName) => {
     try {
-        const response = await fetch('resomusic.netlify.app/api/get-song-context', {
+        const response = await fetch('/.netlify/functions/get-song-context', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
