@@ -1014,10 +1014,9 @@ body.sidebar-closed .main-content {
 
 @media (max-width: 768px) {
     #player-bar {
-        position: relative;
         display: flex;
         align-items: center;
-        gap: 15px;
+        gap: 15px; /* Adiciona espaçamento entre os elementos */
         padding: 0 15px;
     }
 
@@ -1027,19 +1026,18 @@ body.sidebar-closed .main-content {
     }
 
     .player-progress {
-        position: absolute;
-        left: 65px;
-        right: 15px;
         display: flex;
         align-items: center;
+        flex-grow: 1; /* Permite que a barra ocupe todo o espaço */
+        flex-shrink: 1; /* Permite que a barra encolha se necessário */
+        min-width: 0; /* IMPEDE que a barra empurre os outros elementos */
         gap: 8px;
     }
 
-    /* Adicione estas novas regras */
     .progress-bar-wrapper {
         width: 100%;
-        height: 8px; /* Defina a altura do contêiner da barra de progresso */
-        background-color: #555; /* Uma cor de fundo para a barra vazia */
+        height: 8px;
+        background-color: #555;
         border-radius: 4px;
         overflow: hidden;
     }
@@ -1362,6 +1360,7 @@ body.sidebar-closed .main-content {
     transition: width 0.1s linear;
 
 }
+
 
 
 
