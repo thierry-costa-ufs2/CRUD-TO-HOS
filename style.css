@@ -22,7 +22,9 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    width: 100vw;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
     overflow-x: hidden;
 }
 
@@ -33,16 +35,15 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 20px 40px;
-    background: rgba(25, 25, 25, 0.8); /* Cor de fundo translúcida */
-    backdrop-filter: blur(10px); /* Aumenta o desfoque para um efeito de "vidro fosco" */
-    -webkit-backdrop-filter: blur(10px); /* Compatibilidade com navegadores WebKit */
+    background: rgba(25, 25, 25, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     position: sticky;
     top: 0;
-    left: 0;
-    width: 100vw;
     z-index: 1000;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Sombra mais suave e espessa */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
+
 
 .navbar-toggle {
     background: none;
@@ -64,7 +65,9 @@ body {
 /* --- 4. Layout Principal e Conteúdo --- */
 .main-layout {
     display: flex;
-    flex: 1;
+    flex-grow: 1; /* Permite que o main-layout ocupe todo o espaço disponível */
+    /* A altura total da tela menos a altura da navbar (~60px) */
+    height: calc(100vh - 60px); 
 }
 
 .main-content {
@@ -72,6 +75,8 @@ body {
     padding: 20px;
     margin-left: var(--largura-sidebar);
     transition: margin-left 0.3s ease-in-out;
+    /* Habilita a rolagem vertical dentro deste contêiner */
+    overflow-y: auto; 
 }
 
 body.sidebar-closed .main-content {
@@ -187,10 +192,17 @@ body.sidebar-closed .main-content {
 }
 
 .card-details {
-    flex-grow: 1;
+    flex-grow: 1; /* Garante que o contêiner de texto cresça */
+    overflow: hidden;
+    padding: 0 10px;
+    min-width: 220px; /* Impede que o texto empurre o contêiner */
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+.card-details-text{
+    overflow: hidden;
 }
 
 .card-details-text h2,
@@ -211,6 +223,13 @@ body.sidebar-closed .main-content {
 .card-details-text h3 {
     font-size: 0.95em;
     color: #bbb;
+}
+
+.card-details-text h3,
+.card-details-text h4 {
+    white-space: nowrap !important;      /* Impede que o texto quebre a linha */
+    overflow: hidden !important;         /* Esconde o texto que ultrapassa o contêiner */
+    text-overflow: ellipsis !important;  /* Adiciona "..." no final do texto cortado */
 }
 
 .card-details-text h4 {
@@ -375,13 +394,21 @@ body.sidebar-closed .main-content {
 }
 
 .explore-filters-bar {
+    flex-basis: 200px;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-direction: column;
+    gap: 10px; /* Define um gap de 20px na vertical e 15px na horizontal */
+    padding: 15px 0;
+    border-radius: 12px;    
     background-color: #2a2a2a;
-    padding: 1rem;
-    border-radius: 1rem;
     display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    align-items: center;
+    flex-wrap: wrap; /* Permite que os itens quebrem para a linha de baixo */
+    padding: 15px 0;
+}
+
+.explore-filters-bar::-webkit-scrollbar {
+    display: none;
 }
 
 .filter-btn {
@@ -405,34 +432,32 @@ body.sidebar-closed .main-content {
 }
 
 .filter-group {
+    flex-shrink: 0; /* Impede que o grupo de filtro se comprima */
     display: flex;
-    align-items: center;
-    gap: 10px;
-    flex: 1;
+    flex-direction: column;
+    padding: 0 1rem 0 1rem;
 }
 
 .filter-label {
     color: var(--cor-texto-claro);
-    font-weight: 600;
-    white-space: nowrap;
-    flex-shrink: 0;
+    font-size: 0.8rem;
+    margin-bottom: 5px;
 }
 
 .filter-select {
-    flex: 1;
-    background-color: #363636;
-    border: 1px solid #555;
-    border-radius: 8px;
-    color: var(--cor-texto-claro);
+    width: 100%;
     padding: 8px 12px;
-    font-size: 0.95rem;
-    outline: none;
+    border: 1px solid #2a2a2a;
+    background-color: #363636;
+    color: var(--cor-texto-claro);
+    border-radius: 8px;
     cursor: pointer;
-    appearance: none;
+    font-size: 0.9rem;
+    appearance: none; /* Remove o estilo padrão do navegador */
     -webkit-appearance: none;
-    -moz-appearance: none;
-    padding-right: 30px;
-    transition: border-color 0.2s ease, background-color 0.2s ease;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
 }
 
 .filter-select:hover {
@@ -441,14 +466,23 @@ body.sidebar-closed .main-content {
 
 /* Botão de direção do Sort */
 .sort-direction-btn-modern {
+    flex-grow: 0 !important;
+    flex-shrink: 0 !important;
+    width: 25px !important;
+    height: 30px;
     background-color: #363636;
     border: 1px solid #555;
     border-radius: 8px;
     color: var(--cor-texto-claro);
-    padding: 8px 12px;
     cursor: pointer;
     font-size: 0.95rem;
     transition: background-color 0.2s, border-color 0.2s;
+}
+
+.sort-control {
+    display: flex;
+    align-items: center; /* Alinha o select e o botão verticalmente */
+    gap: 8px; /* Adiciona um pequeno espaço entre eles */
 }
 
 .sort-direction-btn-modern:hover {
@@ -546,7 +580,9 @@ body.sidebar-closed .main-content {
 .carousel-container .card {
     border: none;
     flex-shrink: 0;
-    width: 275px;
+    /* Ajusta a largura para que ocupe uma porcentagem da tela */
+    flex-basis: calc(100% / 1 - 1.5rem); /* Ocupa 100% da largura, descontando o gap */
+    max-width: 275px; /* Mantém a largura máxima em telas maiores */
     padding: 0px;
     flex-direction: column;
     align-items: center;
@@ -554,7 +590,7 @@ body.sidebar-closed .main-content {
 
 .carousel-container .card-image-placeholder {
     width: 100%;
-    height: 250px;
+    height: 250px; /* Este valor pode ser alto para o celular */
     margin: 0;
 }
 
@@ -591,8 +627,9 @@ body.sidebar-closed .main-content {
 }
 
 .carousel-section {
-    position: relative; /* Essencial para posicionar as setas */
-    margin-top: 2rem;
+    position: relative;
+    padding: 0 50px; /* Mantém o padding para desktop */
+    margin-bottom: 3rem;
 }
 
 .carousel-btn {
@@ -943,13 +980,6 @@ body.sidebar-closed .main-content {
 
 /* --- Estilos para Centralização e Carrossel --- */
 /* Contêiner principal para centralizar e posicionar os botões */
-.carousel-section {
-    position: relative; /* Essencial para que os botões fiquem dentro desta seção */
-    max-width: 1200px; /* Largura máxima do seu carrossel. Ajuste se precisar. */
-    margin: 0 auto; /* Centraliza o contêiner na tela */
-    padding: 0 50px; /* Adiciona espaço para os botões nas laterais */
-}
-
 /* O .music-grid já está no caminho, vamos ajustar para exibir 4 cards */
 .music-grid {
     display: flex;
@@ -984,6 +1014,38 @@ body.sidebar-closed .main-content {
 }
 
 @media (max-width: 768px) {
+    .card {
+        padding: 10px;
+    }
+    .main-content {
+        margin-left: 0 !important;
+    }
+    .player-bar-container {
+        padding: 0 10px;
+    }
+    .landing-page-content {
+        padding: 1rem;
+    }
+    .hero-card {
+        padding: 3rem 1rem;
+    }
+    .favorites-banner {
+        padding: 1.5rem;
+    }
+    .carousel-section {
+        padding: 0; /* Reduz o padding lateral para evitar rolagem horizontal */
+    }
+    .carousel-container .card {
+        /* Para telas de desktop, mostre 3 ou mais cards por linha */
+        flex-basis: 220px;
+    }
+    .carousel-container .card-image-placeholder {
+        height: 180px; /* Altere para o valor que preferir */
+    }
+    .carousel-container {
+        gap: 1rem; /* Reduz o espaçamento entre os cards para 16px */
+        padding: 0.5rem 0; /* Ajusta o padding vertical */
+    }
     .explore-header {
         padding: 15px;
         gap: 15px;
@@ -994,14 +1056,26 @@ body.sidebar-closed .main-content {
     .explore-filters-bar {
         flex-direction: column;
         align-items: flex-start;
-        gap: 10px;
+        gap: 0;
+        flex-wrap: wrap; /* Força os itens a ficarem em uma linha no celular */
+        overflow-x: unset; /* Habilita a rolagem horizontal */
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    .explore-filters-bar::-webkit-scrollbar {
+        display: none;
     }
     .filter-group {
         width: 100%; /* Garante que cada grupo ocupe 100% da largura */
+        margin-bottom: 20px;
         justify-content: space-between;
     }
     .filter-select, .sort-direction-btn-modern {
         flex-grow: 1; /* Faz os selects e botões preencherem a largura */
+    }
+    .sort-direction-btn-modern{
+        height: 31px;
     }
      .explore-card-grid {
         /* Em telas de tablet, muda para 1 coluna */
@@ -1016,11 +1090,30 @@ body.sidebar-closed .main-content {
         flex: 0 0 100%;
         max-width: none;
     }
+    .explore-control-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .explore-control-buttons .cta-button,
+    .explore-control-buttons .outline-button {
+        width: 100%;
+    }
 }
 
 @media (max-width: 480px) {
     .explore-card-grid {
         grid-template-columns: 1fr; /* 1 coluna em telas muito pequenas */
+    }
+    .carousel-container .card {
+        /* Para telas de tablet, mostre 2 cards por linha */
+        flex-basis: calc(100% / 2 - 1.5rem);
+    }
+    .carousel-container {
+        gap: 0.8rem; /* Para telas muito pequenas, um espaçamento ainda menor */
+    }
+    .explore-card-grid .card .card-image-placeholder {
+        width: 100px;
+        height: 100px;
     }
 }
 
@@ -1159,7 +1252,7 @@ body.sidebar-closed .main-content {
     background: rgba(25, 25, 25, 0.8);
     backdrop-filter: blur(10px);
     border-top: 1px solid var(--color-border);
-    padding: 0 20px;
+    padding: 0 10px;
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
     z-index: 1000;
     transition: transform 0.4s ease-out, opacity 0.4s ease-out;
@@ -1177,15 +1270,14 @@ body.sidebar-closed .main-content {
 }
 
 #close-player-btn {
-    margin: -20px;
+    background: none;
     border: none;
     cursor: pointer;
-    font-size: 1.5rem; /* Um pouco maior para ser fácil de clicar */
+    font-size: 1.5rem;
     color: var(--cor-texto-claro);
     transition: color 0.2s ease;
-    margin-right: 15px; /* Adiciona um espaço à direita do botão */
-    padding: 30px;
-    background-color: #121212;
+    margin-right: 5px;
+    padding: 5px;
 }
 
 #close-player-btn:hover {
@@ -1234,4 +1326,3 @@ body.sidebar-closed .main-content {
     transition: width 0.1s linear;
 
 }
-
