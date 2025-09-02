@@ -529,7 +529,7 @@ export const Music = {
   renderFilterOptions, sortSongs, getUnique,
   getSongWithCover: async (song) => {
     try {
-      const response = await fetch('resomusic.netlify.app/api/get-song-preview', {
+      const response = await fetch('/.netlify/functions/get-song-preview', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -560,4 +560,5 @@ export const Music = {
   }
 
 };
+
 
