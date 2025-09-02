@@ -152,7 +152,7 @@ const renderHomePage = (state) => {
         <div class="landing-page-content">
             <div class="hero-card">
                 <h1>Bem-vindo ao Reso.</h1>
-                <p>Descubra o seu estilo musical. Uma biblioteca infinita de músicas a um clique de distância.</p>
+                <p>Descubra o seu estilo musical! Uma biblioteca cheia de músicas a apenas um clique de distância.</p>
                 <button id="explore-btn" class="cta-button">Explorar</button>
             </div>
             ${genreCarouselsHTML}
